@@ -1,0 +1,116 @@
+*{
+padding: 0;
+margin:0;
+box-sizing: border-box;
+}
+.bg {
+    background-position: center;
+    background-image: url("photo1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+.menubar{
+background: rgb(0,0,100);
+text-align: center;
+ }
+ .menubar ul{
+ display: inline-flex;
+ list-style: none;
+ color: #000000;
+ }
+.menubar ul li{
+width: 180px;
+height:50px;
+padding: 15px;
+margin:15px;
+}
+.menubar ul li a{
+text-decoration:none;
+color:#fff;
+}
+.active, .menubar ul li:hover{
+background: #D091B6;
+border-radius:3px;
+}
+.submenu-doctor{
+display:none;
+}
+.menubar ul li:hover .submenu-doctor {
+display:block;
+position: absolute;
+background:rgb(0,0,100);
+margin-top: 15px;
+margin-left:-15px;
+}
+.menubar ul li:hover .submenu-doctor ul {
+display: block;
+margin:10px;
+}
+.menubar ul li:hover .submenu-doctor ul li {
+width:150px;
+padding:10px;
+border-bottom: 1px dotted #fff
+background: transparent;
+border-radius:0;
+text-align: left;
+text-color: #000000
+}
+.menubar ul li:hover .submenu-doctor ul li:lastchild {
+border-bottom: none;
+}
+.menubar ul li:hover .submenu-doctor ul li a : hover{
+color: #D091B6;
+}
+h1 {
+  display: block;
+  font-size: 5em;
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  margin-left: 250px;
+  margin-right: 50px;
+  font-weight: bold;
+}
+.menubar fa{
+margin: 8px;
+}
+
+.slider-frame{
+height:400px;
+width:400px;
+margin-left:20px;
+margin-top: 50px;
+overflow:hidden;
+}
+@-webkit-keyframes slide_animation{
+0% {left:0px;}
+10% {left:0px;}
+20% {left:100px;}
+30% {left:100px;}
+40% {left:200px;}
+50% {left:200px;}
+60% {left:100px;}
+70% {left:100px;}
+80% {left:0px;}
+90% {left:0px;}
+100% {left:0px;}
+}
+.slide-images{
+width:800px;
+height:400px;
+margin: 0 0 0 -20px;
+position: relative;
+-webkit-animation-name:slide_animation;
+-webkit-animation-duration:33s;
+-webkit-animation-iteration-count:infinite;
+-webkit-animation-direction: alternate;
+-webkit-animation-play-state:running;
+}
+
+.image-container{
+height:1000px;
+width:1600px;
+position:relative;
+float:left
+}
