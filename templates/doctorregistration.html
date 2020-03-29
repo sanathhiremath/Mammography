@@ -15,19 +15,19 @@
 <div class="loginbox">
     <img src="../static/avatar.jpe" class="loginimage">
     <h1>Register Here</h1>
-    <form>
+    <form id='registration' action='/doctor/doctorregistration' method='post'>
         <p>Name</p>
-        <input type="text" name="name" placeholder="Enter Your Name">
+        <input type="text" name="name" id="name" placeholder="Enter Your Name">
         <p>Date of Birth</p>
-        <input type="text" name="dob" placeholder="Enter Your Date of Birth">
+        <input type="text" name="dob" id="dob" placeholder="Enter Your Date of Birth">
         <p>Phone Number</p>
-        <input type="text" name="phone" placeholder="Enter Your Phone Number">
+        <input type="text" name="PhoneNumber" id="PhoneNumber" placeholder="Enter Your Phone Number">
         <p>Specialization</p>
-        <input type="text" name="specialization" placeholder="Enter Your Specialization">
+        <input type="text" name="specialization" id="specialization" placeholder="Enter Your Specialization">
         <p>Email</p>
-        <input type="text" name="email" placeholder="Enter Your Emailid">
+        <input type="text" name="email" id="email" placeholder="Enter Your Emailid">
         <p>Password</p>
-        <input type="password" name="password" placeholder="Enter Password">
+        <input type="password" name="password" id="password" placeholder="Enter Password">
         <input type="submit" name="submit" value="Register">
     </form>
 </div>
