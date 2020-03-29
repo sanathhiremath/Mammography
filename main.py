@@ -6,6 +6,7 @@ app=Flask(__name__)
 def index():
     return render_template("homepage.html")
 
+print()
 @app.route('/doctor')
 def doctor():
     return render_template("doctorhomepage.html")
