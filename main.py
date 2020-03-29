@@ -3,9 +3,10 @@ from flask import Flask,render_template,jsonify
 from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import win32api
 
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:sneha@localhost:5432/Mammogram"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://postgres:sanath@localhost:5432/Mammogram"
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 x=[]
@@ -124,7 +125,12 @@ def doctorregistration():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    if request.method == 'POST':
+        return render_template("adminhomepage.html")
+
+
+@app.route('/admin/adminLogin', methods=['GET', 'POST'])
+def adminLogin():
+    """'if request.method == 'POST':
         adusername = request.form["username"]
         adpassword = request.form["password"]
 
@@ -138,7 +144,28 @@ def admin():
         else:
             return render_template("patientregistration.html")
     else:
+        return render_template("adminhomepage.html")"""
+
+    if request.method == 'POST':
+        adusername = request.form["username"]
+        adpassword = request.form["password"]
+
+        adminuser = db.session.query(AdminModel).filter_by(email=adusername, password=adpassword).first()
+
+        db.session.commit()
+
+        if adminuser is None:
+            return render_template("homepage.html")
+        else:
+            win32api.MessageBox(0, adminuser.Name + " LoggedIn", 'Admin Response')
+            return render_template("patientregistration.html")
+
+
+
+    else:
         return render_template("adminhomepage.html")
+
+
 
 @app.route('/admin/adminregistration', methods=['GET', 'POST'])
 def adminregistration():
