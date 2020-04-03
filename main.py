@@ -4,7 +4,14 @@ from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import win32api
-from validation import DoctorRegistrationForm
+#from validation import DoctorRegistrationForm
+from flask_wtf import FlaskForm
+from wtforms import  SubmitField, TextAreaField,Form, BooleanField, StringField, PasswordField, validators, TextField
+from wtforms.validators import DataRequired, Email, InputRequired, Length
+
+
+
+
 
 app=Flask(__name__)
 app.config['SECRET_KEY'] = 'qwertyuiop'
@@ -126,28 +133,22 @@ def doctor():
     else:
         return render_template("doctorhomepage.html")
 
+
+
 @app.route('/doctor/doctorregistration', methods=['GET', 'POST'])
 def doctorregistration():
-    form = DoctorRegistrationForm(request.form)
-    x = str(form.validate())
-    win32api.MessageBox(0, x, 'Admin Response')
     if request.method == 'POST':
             y = json.dumps(request.form)
             data=json.loads(y)
 
             #data = request.get_json()
             new_doctor = DoctorModel(Name=data['name'], DOB=data['dob'], PhoneNumber=data['PhoneNumber'], specialization=data['specialization'], email=data['email'], password=data['password'])
-           # win32api.MessageBox(0, new_doctor.Name, 'Admin Response')
-            win32api.MessageBox(0, str(form.name), 'Admin Response')
-            if form.validate():
-
-                win32api.MessageBox(0, "success", 'Admin Response')
 
             db.session.add(new_doctor)
             db.session.commit()
-            return render_template("doctorhomepage.html")
+            return render_template("adminhomepage.html")
     else:
-        return render_template("doctorregistration.html",form=form)
+        return render_template("doctorregistration.html")
 
 @app.route('/radiologist', methods=['GET', 'POST'])
 def radiologist():
@@ -180,32 +181,17 @@ def radiologistregistration():
             new_radiologist = RadiologistModel(Name=r['name'], DOB=r['dob'], PhoneNumber=r['PhoneNumber'], specialization=r['specialization'], email=r['email'], password=r['password'])
             db.session.add(new_radiologist)
             db.session.commit()
-            return render_template("radiologisthomepage.html")
+            return render_template("adminhomepage.html")
     else:
         return render_template("radiologistregistrationpage.html")
 
 #@app.route('/admin', methods=['GET', 'POST'])
 #def admin():
-        #return render_template("adminhomepage.html")
+        #return render_template("adminlogin.html")
 
 
 @app.route('/admin/adminLogin', methods=['GET', 'POST'])
 def adminLogin():
-    """'if request.method == 'POST':
-        adusername = request.form["username"]
-        adpassword = request.form["password"]
-
-        adminuser = db.session.query(AdminModel).filter_by(email=adusername).first()
-
-        db.session.commit()
-        if adminuser is None :
-            return render_template("homepage.html")
-        elif adpassword!=adminuser.password:
-            return render_template("homepage.html")
-        else:
-            return render_template("patientregistration.html")
-    else:
-        return render_template("adminhomepage.html")"""
 
     if request.method == 'POST':
         adusername = request.form["username"]
@@ -219,30 +205,17 @@ def adminLogin():
             return render_template("adminregistration.html")
         else:
             win32api.MessageBox(0, adminuser.Name + " LoggedIn", 'Admin Response')
-            return render_template("patientregistration.html")
-    else:
-        return render_template("adminhomepage.html")
-
-
-
-@app.route('/admin/adminregistration', methods=['GET', 'POST'])
-def adminregistration():
-
-    if request.method == 'POST':
-
-            ad=json.dumps(request.form)
-            d=json.loads(ad)
-
-            #data = request.get_json()
-            new_admin = AdminModel(Name=d['name'], Address=d['address'], PhoneNumber=d['PhoneNumber'], email=d['email'], password=d['password'])
-            db.session.add(new_admin)
-            db.session.commit()
-            message="Successfully Registered"
             return render_template("adminhomepage.html")
     else:
-        return render_template("adminregistration.html")
+        return render_template("adminlogin.html")
 
-@app.route('/admin/patientregistration', methods=['GET', 'POST'])
+@app.route('/admin/adminLogin/adminhomepage', methods=['GET', 'POST'])
+def adminhomepage():
+    return render_template("adminhomepage.html")
+
+
+
+@app.route('/patient/patientregistration', methods=['GET', 'POST'])
 def patientregistration():
 
     if request.method == 'POST':
