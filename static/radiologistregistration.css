@@ -3,14 +3,11 @@ padding: 0;
 margin:0;
 box-sizing: border-box;
 }
-
 body, html {
   height: 100%;
 }
-
 .bg{
-
-    background-image: url("admin_6.jpg");
+    background-image: url("radiologist_2.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     box-sizing: border-box;
@@ -25,8 +22,8 @@ font-size:22px;
 color: #fff;
 }
 .loginbox{
-width:320px;
-height:420px;
+width:400px;
+height:650px;
 background:#000;
 color: #fff;
 background: rgb(0,0,0.5);
@@ -36,6 +33,7 @@ position:absolute;
 transform: translate(-50%,-50%);
 box-sizing: border-box;
 padding: 70px 30px;
+margin-top:30px;
 }
 .loginimage {
 width:100px;

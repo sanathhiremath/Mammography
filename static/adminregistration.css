@@ -7,7 +7,7 @@ body, html {
   height: 100%;
 }
 .bg{
-    background-image: url("picture7.jpg");
+    background-image: url("admin_1.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     box-sizing: border-box;
@@ -23,7 +23,7 @@ color: #fff;
 }
 .loginbox{
 width:400px;
-height:650px;
+height:570px;
 background:#000;
 color: #fff;
 background: rgb(0,0,0.5);

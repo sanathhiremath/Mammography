@@ -7,7 +7,7 @@ body, html {
   height: 100%;
 }
 .bg{
-    background-image: url("picture7.jpg");
+    background-image: url("doctor_2.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     box-sizing: border-box;
@@ -106,4 +106,8 @@ color:#fff;
 .active, .menubar ul li:hover{
 background: #D091B6;
 border-radius:3px;
+}
+.form ul li {
+background: #D091B6;
+color:#fff;
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel= "stylesheet"  href= "../static/doctorregistration.css" />
+    <link rel= "stylesheet"  href= "../static/radiologistregistration.css" />
     <link rel= "stylesheet"  href= "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     <meta charset="UTF-8">
     <title>Registration</title>
@@ -15,38 +15,21 @@
 <div class="loginbox">
     <img src="../static/avatar.jpe" class="loginimage">
     <h1>Register Here</h1>
-    <form id='registration' action='/doctor/doctorregistration' method='post'>
-        { { form.csrf }}
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name"  class="form-control" placeholder="Enter Your Name">
-        <label for="dob">Date of Birth</label>
+    <form id='registration' action='/radiologist/radiologistregistration' method='post'>
+        <p>Name</p>
+        <input type="text" name="name" id="name" placeholder="Enter Your Name">
+        <p>Date of Birth</p>
         <input type="text" name="dob" id="dob" placeholder="Enter Your Date of Birth">
-        <label for="PhoneNumber">Phone Number</label>
+        <p>Phone Number</p>
         <input type="text" name="PhoneNumber" id="PhoneNumber" placeholder="Enter Your Phone Number">
-        <label for="specialization">Specialization</label>
+        <p>Specialization</p>
         <input type="text" name="specialization" id="specialization" placeholder="Enter Your Specialization">
-        <label for="email">Email</label>
+        <p>Email</p>
         <input type="text" name="email" id="email" placeholder="Enter Your Emailid">
-        <label for="password">Password</label>
+        <p>Password</p>
         <input type="password" name="password" id="password" placeholder="Enter Password">
-
         <input type="submit" name="submit" value="Register">
-    </form> {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-
-{% for message in messages %}
-{% if "Error" not in message[1]: %}
-<div class="alert alert-info">
-                <strong>Success! </strong> { { message[1] }}</div>
-{% endif %}
-
-{% if "Error" in message[1]: %}
-<div class="alert alert-warning">
-                { { message[1] }}</div>
-{% endif %}
-{% endfor %}
-{% endif %}
-{% endwith %}
+    </form>
 </div>
 </body>
 </html>
