@@ -10,7 +10,7 @@ body, html {
 
 .bg{
 
-    background-image: url("admin_6.jpg");
+    background-image: url("radiologist_1.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     box-sizing: border-box;
@@ -31,7 +31,7 @@ background:#000;
 color: #fff;
 background: rgb(0,0,0.5);
 top:60%;
-left:50%;
+left:20%;
 position:absolute;
 transform: translate(-50%,-50%);
 box-sizing: border-box;

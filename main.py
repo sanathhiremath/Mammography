@@ -4,15 +4,19 @@ from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import win32api
+from validation import DoctorRegistrationForm
 
 app=Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://postgres:sanath@localhost:5432/Mammogram"
+app.config['SECRET_KEY'] = 'qwertyuiop'
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:sneha@localhost:5432/Mammogram"
 db = SQLAlchemy(app)
+
 migrate = Migrate(app, db)
 x=[]
 
 class DoctorModel(db.Model):
     __tablename__ = 'Doctor'
+
 
     id = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String())
@@ -32,6 +36,29 @@ class DoctorModel(db.Model):
 
     def __repr__(self):
         return f"<Doctor {self.name}>"
+
+class RadiologistModel(db.Model):
+    __tablename__ = 'Radiologist'
+
+
+    id = db.Column(db.Integer, primary_key=True)
+    Name = db.Column(db.String())
+    DOB = db.Column(db.Date())
+    PhoneNumber = db.Column(db.String())
+    specialization = db.Column(db.String())
+    email = db.Column(db.String())
+    password = db.Column(db.String())
+
+    def __init__(self, Name, DOB, PhoneNumber, specialization, email, password):
+        self.Name = Name
+        self.DOB = DOB
+        self.PhoneNumber = PhoneNumber
+        self.specialization=specialization
+        self.email=email
+        self.password=password
+
+    def __repr__(self):
+        return f"<Radiologist {self.name}>"
 
 class AdminModel(db.Model):
     __tablename__ = 'Admin'
@@ -101,31 +128,65 @@ def doctor():
 
 @app.route('/doctor/doctorregistration', methods=['GET', 'POST'])
 def doctorregistration():
-
+    form = DoctorRegistrationForm(request.form)
+    x = str(form.validate())
+    win32api.MessageBox(0, x, 'Admin Response')
     if request.method == 'POST':
-            '''Name=request.form["name"]
-            DOB = request.form["dob"]
-            PhoneNumber=request.form["PhoneNumber"]
-            specialization = request.form["specialization"]
-            email = request.form["email"]
-            password = request.form["password"]
-            x.append({'Name':Name,'DOB':DOB,'PhoneNumber':PhoneNumber,'specialization':specialization,'email':email,'password':password})
-            dict(x)'''
-
-            y=json.dumps(request.form)
+            y = json.dumps(request.form)
             data=json.loads(y)
 
             #data = request.get_json()
             new_doctor = DoctorModel(Name=data['name'], DOB=data['dob'], PhoneNumber=data['PhoneNumber'], specialization=data['specialization'], email=data['email'], password=data['password'])
+           # win32api.MessageBox(0, new_doctor.Name, 'Admin Response')
+            win32api.MessageBox(0, str(form.name), 'Admin Response')
+            if form.validate():
+
+                win32api.MessageBox(0, "success", 'Admin Response')
+
             db.session.add(new_doctor)
             db.session.commit()
             return render_template("doctorhomepage.html")
     else:
-        return render_template("doctorregistration.html")
+        return render_template("doctorregistration.html",form=form)
 
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
-        return render_template("adminhomepage.html")
+@app.route('/radiologist', methods=['GET', 'POST'])
+def radiologist():
+    if request.method == 'POST':
+        username = request.form["username"]
+        password = request.form["password"]
+
+        user = db.session.query(RadiologistModel).filter_by(email=username).first()
+
+        db.session.commit()
+        if user is None :
+            return render_template("homepage.html")
+        elif password!=user.password:
+            return render_template("homepage.html")
+        else:
+            return render_template("radiologistregistrationpage.html")
+    else:
+        return render_template("radiologisthomepage.html")
+
+@app.route('/radiologist/radiologistregistration', methods=['GET', 'POST'])
+def radiologistregistration():
+
+    if request.method == 'POST':
+
+
+            re=json.dumps(request.form)
+            r=json.loads(re)
+
+            #data = request.get_json()
+            new_radiologist = RadiologistModel(Name=r['name'], DOB=r['dob'], PhoneNumber=r['PhoneNumber'], specialization=r['specialization'], email=r['email'], password=r['password'])
+            db.session.add(new_radiologist)
+            db.session.commit()
+            return render_template("radiologisthomepage.html")
+    else:
+        return render_template("radiologistregistrationpage.html")
+
+#@app.route('/admin', methods=['GET', 'POST'])
+#def admin():
+        #return render_template("adminhomepage.html")
 
 
 @app.route('/admin/adminLogin', methods=['GET', 'POST'])
@@ -155,13 +216,10 @@ def adminLogin():
         db.session.commit()
 
         if adminuser is None:
-            return render_template("homepage.html")
+            return render_template("adminregistration.html")
         else:
             win32api.MessageBox(0, adminuser.Name + " LoggedIn", 'Admin Response')
             return render_template("patientregistration.html")
-
-
-
     else:
         return render_template("adminhomepage.html")
 
@@ -200,6 +258,25 @@ def patientregistration():
             return render_template("adminhomepage.html")
     else:
         return render_template("patientregistration.html")
+
+@app.route('/patient', methods=['GET', 'POST'])
+def patient():
+    if request.method == 'POST':
+        username = request.form["username"]
+        password = request.form["password"]
+
+        user = db.session.query(PatientModel).filter_by(email=username).first()
+
+        db.session.commit()
+        if user is None :
+            return render_template("homepage.html")
+        elif password!=user.password:
+            return render_template("homepage.html")
+        else:
+            return render_template("radiologistregistrationpage.html")
+    else:
+        return render_template("patienthomepage.html")
+
 
 
 if __name__=="__main__":
