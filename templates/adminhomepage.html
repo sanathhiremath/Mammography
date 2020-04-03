@@ -1,29 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <link rel= "stylesheet"  href= "../static/admin.css" />
+    <link rel= "stylesheet"  href= "../static/adminhomepage.css" />
     <link rel= "stylesheet"  href= "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <script type="text/javascript" src="../static/slideshow.js"></script>
+    <title>HOME PAGE</title>
 </head>
 <body class="bg">
 <div class="menubar">
     <ul>
-        <li class="active"><a href="/"><i class="fa fa-home" aria-hidden="true"></i> HOME</a></li>
-        </ul>
-</div>
-<div class="loginbox">
-    <img src="../static/avatar.jpe" class="loginimage">
-    <h1>Login Here</h1>
-    <form id='login' action='/admin/adminLogin' method='post'>
-        <p>Username</p>
-        <input type="text" name="username" id="username" placeholder="Enter Username">
-        <p>Password</p>
-        <input type="password" name="password" id="password" placeholder="Enter Password">
-        <input type="submit" name="submit" value="Login">
-        <a href="/admin/adminregistration">Not yet signed in register here</a>
-    </form>
 
+        <li><a href="/doctor/doctorregistration"><i class="fa fa-user-md" aria-hidden="true"></i>  REGISTER DOCTOR</a></li>
+        <li><a href="/radiologist/radiologistregistration"><i class="fa fa-user-md" aria-hidden="true"></i> REGISTER RADIOLOGIST</a></li>
+        <li><a href="/patient/patientregistration"><i class="fa fa-bed" aria-hidden="true"></i>  REGISTER PATIENT</a></li>
+        <li ><a href="/admin/adminLogin"><i class="fa fa-home" aria-hidden="true"></i>  HOME</a></li>
+    </ul>
 </div>
 </body>
 </html>
