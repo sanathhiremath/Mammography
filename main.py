@@ -8,6 +8,7 @@ import win32api
 from flask_wtf import FlaskForm
 from wtforms import  SubmitField, TextAreaField,Form, BooleanField, StringField, PasswordField, validators, TextField
 from wtforms.validators import DataRequired, Email, InputRequired, Length
+from flask_mail import Mail, Message
 
 
 
@@ -16,7 +17,14 @@ from wtforms.validators import DataRequired, Email, InputRequired, Length
 app=Flask(__name__)
 app.config['SECRET_KEY'] = 'qwertyuiop'
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:sneha@localhost:5432/Mammogram"
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'snehanarayan789@gmail.com'  # enter your email here
+app.config['MAIL_DEFAULT_SENDER'] = 'snehanarayan789@gmail.com' # enter your email here
+app.config['MAIL_PASSWORD'] = 'ambika1234'
 db = SQLAlchemy(app)
+mail = Mail(app)
 
 migrate = Migrate(app, db)
 x=[]
@@ -133,7 +141,9 @@ def doctor():
     else:
         return render_template("doctorhomepage.html")
 
-
+@app.route('/doctor/passwordreset', methods=['GET', 'POST'])
+def doctorpaswordreset():
+    return render_template("doctorpasswordresetpage.html")
 
 @app.route('/doctor/doctorregistration', methods=['GET', 'POST'])
 def doctorregistration():
@@ -146,6 +156,10 @@ def doctorregistration():
 
             db.session.add(new_doctor)
             db.session.commit()
+            msg = Message("Confirmation Email", recipients=[new_doctor.email])
+            msg.body = "You are successfully registered {} <{}>.".format(new_doctor.Name, new_doctor.email)
+            msg.html=render_template("doctorresetpassword.html",username=new_doctor.Name, link="http://127.0.0.1:5000/doctor/passwordreset")
+            mail.send(msg)
             return render_template("adminhomepage.html")
     else:
         return render_template("doctorregistration.html")
