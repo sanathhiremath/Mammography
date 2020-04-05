@@ -1,5 +1,6 @@
 import json
 
+from Src.models import *
 from Util.database import db
 from Util.email import send_email
 from appConfig import app
@@ -10,97 +11,8 @@ app.config['SECRET_KEY'] = 'qwertyuiop'
 
 x = []
 
-
-class DoctorModel(db.Model):
-    __tablename__ = 'Doctor'
-
-    id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String())
-    DOB = db.Column(db.Date())
-    PhoneNumber = db.Column(db.String())
-    specialization = db.Column(db.String())
-    email = db.Column(db.String())
-    password = db.Column(db.String())
-
-    def __init__(self, Name, DOB, PhoneNumber, specialization, email, password):
-        self.Name = Name
-        self.DOB = DOB
-        self.PhoneNumber = PhoneNumber
-        self.specialization = specialization
-        self.email = email
-        self.password = password
-
-    def __repr__(self):
-        return f"<Doctor {self.name}>"
-
-
-class RadiologistModel(db.Model):
-    __tablename__ = 'radiologist'
-
-    id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String())
-    DOB = db.Column(db.Date())
-    PhoneNumber = db.Column(db.String())
-    specialization = db.Column(db.String())
-    email = db.Column(db.String())
-    password = db.Column(db.String())
-
-    def __init__(self, Name, DOB, PhoneNumber, specialization, email, password):
-        self.Name = Name
-        self.DOB = DOB
-        self.PhoneNumber = PhoneNumber
-        self.specialization = specialization
-        self.email = email
-        self.password = password
-
-    def __repr__(self):
-        return f"<Radiologist {self.name}>"
-
-
-class AdminModel(db.Model):
-    __tablename__ = 'Admin'
-
-    id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String())
-    Address = db.Column(db.String())
-    PhoneNumber = db.Column(db.String())
-    email = db.Column(db.String())
-    password = db.Column(db.String())
-
-    def __init__(self, Name, Address, PhoneNumber, email, password):
-        self.Name = Name
-        self.Address = Address
-        self.PhoneNumber = PhoneNumber
-        self.email = email
-        self.password = password
-
-    def __repr__(self):
-        return f"<Admin {self.name}>"
-
-
-class PatientModel(db.Model):
-    __tablename__ = 'Patient'
-
-    id = db.Column(db.Integer, primary_key=True)
-    Name = db.Column(db.String())
-    DOB = db.Column(db.Date())
-    Guardianname = db.Column(db.String())
-    PhoneNumber = db.Column(db.String())
-    Address = db.Column(db.String())
-    email = db.Column(db.String())
-    password = db.Column(db.String())
-
-    def __init__(self, Name, DOB, Guardianname, PhoneNumber, Address, email, password):
-        self.Name = Name
-        self.DOB = DOB
-        self.Guardianname = Guardianname
-        self.PhoneNumber = PhoneNumber
-        self.Address = Address
-        self.email = email
-        self.password = password
-
-    def __repr__(self):
-        return f"<Patient {self.name}>"
+import Src.models
+import Src.WebAPIs
 
 
 @app.route('/')
@@ -257,4 +169,5 @@ def patient():
         return render_template("patienthomepage.html")
 
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
