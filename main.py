@@ -1,5 +1,4 @@
 import json
-
 from Src.models import *
 from Util.database import db
 from Util.email import send_email
@@ -18,6 +17,7 @@ import Src.WebAPIs
 @app.route('/')
 def index():
     return render_template("homepage.html")
+
 
 
 @app.route('/doctor', methods=['GET', 'POST'])
@@ -64,6 +64,34 @@ def doctorregistration():
         return render_template("adminhomepage.html")
     else:
         return render_template("doctorregistration.html")
+
+
+@app.route('/api/GetDoctorDetails/<email>/<password>', methods=['GET', 'POST'])
+def GetDoctorDetails(email,password):
+    #return "My emil is " +email+ " and password is "+ password
+    #return "Hello"
+    #json = request.get_json()
+    value = db.session.query(DoctorModel).filter_by(email=email, password=password).first()
+    #win32api.MessageBox(0, value.Name+value.email+str(value.DOB)+str(value.id)+value.PhoneNumber+value.specialization+value.password + " LoggedIn", 'Admin Response')
+
+    db.session.commit()
+
+    if value is None:
+        r={"id":0}
+        res={"result":r}
+        result = json.dumps(res)
+        #win32api.MessageBox(0,"invalid",'Admin response')
+        return result
+    else:
+        v={"id":int(value.id), "name":value.Name, "dob":str(value.DOB), "phonenumber":value.PhoneNumber,"specialization":value.specialization, "email":value.email, "password": value.password}
+        res={"result":v}
+        #win32api.MessageBox(0,str(v),'Admin Response')
+
+        result=json.dumps(res)
+        #result=Response(js, status=200, mimetype=)
+        #win32api.MessageBox(0, value.Name + " LoggedIn", 'Admin Response')
+        return result
+
 
 
 @app.route('/radiologist', methods=['GET', 'POST'])
@@ -169,5 +197,7 @@ def patient():
         return render_template("patienthomepage.html")
 
 
+
 if __name__ == "__main__":
     app.run(debug=True)
+
