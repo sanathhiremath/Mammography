@@ -1,27 +1,5 @@
 from Util.database import db
 
-class DoctorModegl(db.Model):
-    __tablename__ = 'doctortest'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String())
-    DOB = db.Column(db.Date())
-    phone_number = db.Column(db.String())
-    specialization = db.Column(db.String())
-    email = db.Column(db.String())
-    password = db.Column(db.String())
-
-    def __init__(self, Name, DOB, PhoneNumber, specialization, email, password):
-        self.Name = Name
-        self.DOB = DOB
-        self.PhoneNumber = PhoneNumber
-        self.specialization = specialization
-        self.email = email
-        self.password = password
-
-    def __repr__(self):
-        return f"<doctortest {self.name}>"
-
 
 class DoctorModel(db.Model):
     __tablename__ = 'doctor'
@@ -116,5 +94,3 @@ class PatientModel(db.Model):
 
 
 user_type_dict = {"doctor": DoctorModel, "patient": PatientModel, "radiologist": RadiologistModel}
-
-
