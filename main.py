@@ -6,9 +6,7 @@ from appConfig import app
 import win32api
 from flask import request, render_template
 
-app.config['SECRET_KEY'] = 'qwertyuiop'
-
-x = []
+# app.config['SECRET_KEY'] = 'qwertyuiop'
 
 import Src.models
 import Src.WebAPIs
@@ -19,7 +17,8 @@ def index():
     return render_template("homepage.html")
 
 
-# -----------------Admin----------------------------------
+# region admin
+
 
 @app.route('/admin/passwordreset', methods=['GET', 'POST'])
 def resetpassword():
@@ -50,6 +49,11 @@ def adminLogin():
 @app.route('/admin/adminLogin/adminhomepage', methods=['GET', 'POST'])
 def adminhomepage():
     return render_template("adminhomepage.html")
+
+
+# endregion
+
+# region doctor
 
 
 @app.route('/doctor', methods=['GET', 'POST'])
@@ -122,7 +126,10 @@ def GetDoctorDetails(email, password):
         return result
 
 
-# -------------------------------radiologist-----------------------------------
+# endregion
+
+# region radiologist
+
 
 @app.route('/radiologist', methods=['GET', 'POST'])
 def radiologist():
@@ -160,11 +167,10 @@ def radiologistregistration():
         return render_template("radiologistregistrationpage.html")
 
 
-# @app.route('/admin', methods=['GET', 'POST'])
-# def admin():
-# return render_template("adminlogin.html")
+# endregion
 
-# ------------------patient-----------------------
+# region patient
+
 
 @app.route('/patient/patientregistration', methods=['GET', 'POST'])
 def patientregistration():
@@ -204,5 +210,7 @@ def patient():
         return render_template("patienthomepage.html")
 
 
+# endregion
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False, threaded=False)
