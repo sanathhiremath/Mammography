@@ -1,8 +1,10 @@
 from appConfig import app
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
 
 db = SQLAlchemy(app)
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 Migrate(app, db)
 
 

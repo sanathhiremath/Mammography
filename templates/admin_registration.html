@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="../static/adminregistration.css" rel="stylesheet"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body class="bg">
+<div class="menubar">
+    <ul>
+        <li class="active"><a href="/"><i aria-hidden="true" class="fa fa-home"></i> HOME</a></li>
+    </ul>
+</div>
+<div class="loginbox">
+    <img class="loginimage" src="../static/avatar.jpe">
+    <h1>Register Here</h1>
+    <form action='/admin/adminLogin/adminhomepage' id='adminregistration' method='post'>
+        <p>Name</p>
+        <input id="name" name="name" placeholder="Enter Your Name" type="text">
+        <p>Address</p>
+        <input id="address" name="address" placeholder="Enter Your Address" type="text">
+        <p>Phone Number</p>
+        <input id="PhoneNumber" name="PhoneNumber" placeholder="Enter Your Phone Number" type="text">
+        <p>Email</p>
+        <input id="email" name="email" placeholder="Enter Your Emailid" type="text">
+        <p>Password</p>
+        <input id="password" name="password" placeholder="Enter Password" type="password">
+        <input name="submit" type="submit" value="Register">
+    </form>
+</div>
+</body>
+</html>

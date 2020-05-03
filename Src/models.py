@@ -12,10 +12,10 @@ class DoctorModel(db.Model):
     email = db.Column(db.String())
     password = db.Column(db.String())
 
-    def __init__(self, Name, DOB, PhoneNumber, specialization, email, password):
-        self.Name = Name
+    def __init__(self, name, DOB, phone_number, specialization, email, password):
+        self.name = name
         self.DOB = DOB
-        self.PhoneNumber = PhoneNumber
+        self.phone_number = phone_number
         self.specialization = specialization
         self.email = email
         self.password = password
@@ -35,10 +35,10 @@ class RadiologistModel(db.Model):
     email = db.Column(db.String())
     password = db.Column(db.String())
 
-    def __init__(self, Name, DOB, PhoneNumber, specialization, email, password):
-        self.Name = Name
+    def __init__(self, name, DOB, phone_number, specialization, email, password):
+        self.name = name
         self.DOB = DOB
-        self.PhoneNumber = PhoneNumber
+        self.phone_number = phone_number
         self.specialization = specialization
         self.email = email
         self.password = password
@@ -80,12 +80,12 @@ class PatientModel(db.Model):
     email = db.Column(db.String())
     password = db.Column(db.String())
 
-    def __init__(self, Name, DOB, Guardianname, PhoneNumber, Address, email, password):
-        self.Name = Name
+    def __init__(self, name, DOB, guardian_name, phone_number, address, email, password):
+        self.name = name
         self.DOB = DOB
-        self.Guardianname = Guardianname
-        self.PhoneNumber = PhoneNumber
-        self.Address = Address
+        self.guardian_name = guardian_name
+        self.phone_number = phone_number
+        self.address = address
         self.email = email
         self.password = password
 
