@@ -115,7 +115,7 @@ def doctorregistration():
         email_body = "You are successfully registered {} <{}>.".format(new_doctor.name, new_doctor.email)
         email_html = render_template('EmailTemplates/welcome_email.html', username=new_doctor.name, link=link)
         send_email(new_doctor.email, '', "Confirmation Email", email_body, email_html)
-        return render_template("adminhomepage.html")
+        return render_template("admin_homepage.html")
     else:
         return render_template("doctor_registration.html")
 
@@ -169,7 +169,7 @@ def radiologist():
         elif password != user.password:
             return render_template("homepage.html")
         else:
-            return render_template("radiologist_registration.html")
+            return render_template("radiologist_patient.html")
     else:
         return render_template("radiologisthomepage.html")
 
@@ -186,10 +186,33 @@ def radiologistregistration():
                                            specialization=r['specialization'], email=r['email'], password=r['password'])
         db.session.add(new_radiologist)
         db.session.commit()
-        return render_template("adminhomepage.html")
+        return render_template("admin_homepage.html")
     else:
-        return render_template("radiologist_registration.html")
+        return render_template("radiologistregistrationpage.html")
 
+@app.route('/radiologist/radiologist_patient', methods=['GET', 'POST'])
+def radiologist_patient():
+    if request.method == 'POST':
+        username = request.form["email"]
+        global patient_email
+        patient_email = db.session.query(PatientModel).filter_by(email=username).first()
+
+        if patient_email is None:
+            return render_template("radiologist_pateint.html")
+        else:
+            patient_id=patient_email.id
+            win32api.MessageBox(0, str(patient_id) + "is the patient id", 'Admin Response')
+            return render_template("radiologist_upload.html")
+    else:
+        return render_template("radiologist_patient.html")
+
+@app.route('/radiologist/radiologist_upload', methods=['GET', 'POST'])
+def radiologist_upload():
+    return render_template("radiologist_upload.html")
+
+@app.route('/radiologist/radiologist_patient/radiologist_upload/radiologist_comment', methods=['GET', 'POST'])
+def radiologist_comment():
+    return render_template("radilogistcomments.html")
 
 # endregion
 
@@ -208,7 +231,7 @@ def patientregistration():
         db.session.add(new_patient)
         db.session.commit()
         message = "Successfully Registered"
-        return render_template("adminhomepage.html")
+        return render_template("admin_homepage.html")
     else:
         return render_template("patientregistration.html")
 

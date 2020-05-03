@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet"  href= "../static/radiologist_comments.css" />
+    <link rel= "stylesheet"  href= "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="menubar">
+    <ul>
+        <li class="active"><a href="/"><i class="fa fa-home" aria-hidden="true"></i> HOME</a></li>
+        </ul>
+</div>
+<div class="commentbox">
+
+    <form id='comment' action='/radiologist/radiologist_patient/radiologist_upload/radiologist_comment' method='post'>
+        <textarea name="comments" cols="100" rows="10">Enter text here...</textarea>
+        <br/>
+        <input type="submit" name="submit" value="Submit">
+
+    </form>
+
+</div>
+</body>
+</html>

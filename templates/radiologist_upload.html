@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet"  href= "../static/radiologist_patient.css" />
+    <link rel= "stylesheet"  href= "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body class="bg">
+<div class="menubar">
+    <ul>
+        <li class="active"><a href="/"><i class="fa fa-home" aria-hidden="true"></i> HOME</a></li>
+        </ul>
+</div>
+<div class="loginbox">
+
+    <form id='upload' action='/radiologist/radiologist_patient' method='post'>
+        <input type="File" name="fileupload" id="fileupload" accept=".jpg">
+
+        <input type="submit" name="submit" value="Submit">
+
+    </form>
+
+</div>
+</body>
+</html>

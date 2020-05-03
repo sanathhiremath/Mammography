@@ -93,4 +93,31 @@ class PatientModel(db.Model):
         return f"<patient {self.name}>"
 
 
+class ParescriptionModel(db.Model):
+    __tablename__ = 'prescription'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pid = db.Column(db.String())
+    did = db.Column(db.Date())
+    patientemail = db.Column(db.String())
+    rid = db.Column(db.String())
+    radiology_result = db.Column(db.String())
+    radiology_comments = db.Column(db.String())
+    radiology_imagepath = db.Column(db.String())
+    doctorcomments=db.Column(db.String())
+
+    def __init__(self, pid, did, patientemail, rid, radiology_result, radiology_comments, radiology_imagepath, doctor_comments):
+        self.pid = pid
+        self.did = did
+        self.patientemail = patientemail
+        self.rid = rid
+        self.radiologyresult = radiologyresult
+        self.radiologycomments = radiologycomments
+        self.radiologyimage = radiologyimage
+        self.doctorcomments=doctorcomments
+
+
+
+
+
 user_type_dict = {"doctor": DoctorModel, "patient": PatientModel, "radiologist": RadiologistModel}
