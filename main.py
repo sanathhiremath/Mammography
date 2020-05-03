@@ -1,16 +1,22 @@
 import json
+from pathlib import Path
+
+import win32api
+from flask import render_template, request, redirect
+
 from Src.models import *
-from Util.database import db
+from Util.database import db, engine
 from Util.email import send_email
 from appConfig import app
-import win32api
-from flask import request, render_template
 
 # app.config['SECRET_KEY'] = 'qwertyuiop'
 
+# region run files
 import Src.models
 import Src.WebAPIs
 
+
+# endregion
 
 @app.route('/')
 def index():
@@ -18,13 +24,31 @@ def index():
 
 
 # region admin
-
-
-@app.route('/admin/passwordreset', methods=['GET', 'POST'])
+@app.route('/admin/ResetPassword', methods=['GET', 'POST'])
 def resetpassword():
-    id = request.args['id']
-    user_type = request.args['user_type']
-    return render_template("doctorpasswordresetpage.html")
+    if request.method == 'GET':
+        id = request.args['id']
+        user_type = request.args['user_type']
+        return render_template("password_reset.html", id=id, user_type=user_type)
+    else:
+        user_id = request.form["user_id"]
+        user_type = request.form["user_type"]
+        current_password = request.form["current_password"]
+        password = request.form["password"]
+        cnfpassword = request.form["cnfpassword"]
+        if password != cnfpassword:
+            win32api.MessageBox(0, 'Your password and confirmation password do not match.', 'Password Reset failed')
+            return redirect(request.referrer)
+
+        user = user_type_dict[user_type].query.filter_by(id=user_id, password=current_password).first()
+        if user is None:
+            win32api.MessageBox(0, 'Incorrect current password.', 'Password Reset failed')
+            return redirect(request.referrer)
+        else:
+            user.password = password
+            db.session.commit()
+            win32api.MessageBox(0, 'Password reset done successfully', 'Password Reset')
+            return redirect('/')
 
 
 @app.route('/admin/adminLogin', methods=['GET', 'POST'])
@@ -38,24 +62,23 @@ def adminLogin():
         db.session.commit()
 
         if adminuser is None:
-            return render_template("adminregistration.html")
+            return render_template("admin_registration.html")
         else:
-            win32api.MessageBox(0, adminuser.name + " LoggedIn", 'Admin Response')
-            return render_template("adminhomepage.html")
+
+            # win32api.MessageBox(0, adminuser.name + " LoggedIn", 'Admin Response')
+            return render_template("admin_homepage.html")
     else:
-        return render_template("adminlogin.html")
+        return render_template("admin_login.html")
 
 
 @app.route('/admin/adminLogin/adminhomepage', methods=['GET', 'POST'])
 def adminhomepage():
-    return render_template("adminhomepage.html")
+    return render_template("admin_homepage.html")
 
 
 # endregion
 
 # region doctor
-
-
 @app.route('/doctor', methods=['GET', 'POST'])
 def doctor():
     if request.method == 'POST':
@@ -70,7 +93,7 @@ def doctor():
         elif password != user.password:
             return render_template("homepage.html")
         else:
-            return render_template("doctorregistration.html")
+            return render_template("doctor_registration.html")
     else:
         return render_template("doctorhomepage.html")
 
@@ -78,24 +101,23 @@ def doctor():
 @app.route('/doctor/doctorregistration', methods=['GET', 'POST'])
 def doctorregistration():
     if request.method == 'POST':
-        y = json.dumps(request.form)
-        data = json.loads(y)
-
-        # data = request.get_json()
-        new_doctor = DoctorModel(name=data['name'], DOB=data['dob'], phone_number=data['PhoneNumber'],
+        # y = json.dumps(request.form)
+        # data = json.loads(y)
+        data = request.form
+        new_doctor = DoctorModel(name=data['name'], DOB=data['dob'], phone_number=data['phone_number'],
                                  specialization=data['specialization'], email=data['email'], password=data['password'])
-
         db.session.add(new_doctor)
         db.session.commit()
-        win32api.MessageBox(0, str(new_doctor.id) + " LoggedIn", 'Admin Response')
+
+        # win32api.MessageBox(0, str(new_doctor.id) + " LoggedIn", 'Admin Response')
+        link = f"{app.config['AppUrl']}admin/ResetPassword?id={new_doctor.id}&user_type=doctor"
 
         email_body = "You are successfully registered {} <{}>.".format(new_doctor.name, new_doctor.email)
-        email_html = render_template("doctorresetpassword.html", username=new_doctor.name,
-                                     link="http://127.0.0.1:5000/doctor/passwordreset")
+        email_html = render_template('EmailTemplates/welcome_email.html', username=new_doctor.name, link=link)
         send_email(new_doctor.email, '', "Confirmation Email", email_body, email_html)
         return render_template("adminhomepage.html")
     else:
-        return render_template("doctorregistration.html")
+        return render_template("doctor_registration.html")
 
 
 @app.route('/api/GetDoctorDetails/<email>/<password>', methods=['GET', 'POST'])
@@ -104,7 +126,11 @@ def GetDoctorDetails(email, password):
     # return "Hello"
     # json = request.get_json()
     value = db.session.query(DoctorModel).filter_by(email=email, password=password).first()
-    # win32api.MessageBox(0, value.Name+value.email+str(value.DOB)+str(value.id)+value.PhoneNumber+value.specialization+value.password + " LoggedIn", 'Admin Response')
+    # win32api.MessageBox(0,    # win32api.MessageBox(0,
+    # value.Name+value.email+str(value.DOB)+str(value.id)+value.PhoneNumber+value.specialization+value.password
+    # + " LoggedIn", 'Admin Response')
+    # value.Name+value.email+str(value.DOB)+str(value.id)+value.PhoneNumber+value.specialization+value.password
+    # + " LoggedIn", 'Admin Response')
 
     db.session.commit()
 
@@ -129,8 +155,6 @@ def GetDoctorDetails(email, password):
 # endregion
 
 # region radiologist
-
-
 @app.route('/radiologist', methods=['GET', 'POST'])
 def radiologist():
     if request.method == 'POST':
@@ -145,7 +169,7 @@ def radiologist():
         elif password != user.password:
             return render_template("homepage.html")
         else:
-            return render_template("radiologistregistrationpage.html")
+            return render_template("radiologist_registration.html")
     else:
         return render_template("radiologisthomepage.html")
 
@@ -164,14 +188,12 @@ def radiologistregistration():
         db.session.commit()
         return render_template("adminhomepage.html")
     else:
-        return render_template("radiologistregistrationpage.html")
+        return render_template("radiologist_registration.html")
 
 
 # endregion
 
 # region patient
-
-
 @app.route('/patient/patientregistration', methods=['GET', 'POST'])
 def patientregistration():
     if request.method == 'POST':
@@ -205,12 +227,13 @@ def patient():
         elif password != user.password:
             return render_template("homepage.html")
         else:
-            return render_template("radiologistregistrationpage.html")
+            return render_template("radiologist_registration.html")
     else:
         return render_template("patienthomepage.html")
 
 
 # endregion
 
+
 if __name__ == "__main__":
-    app.run(debug=False, threaded=False)
+    app.run(debug=True, threaded=False)

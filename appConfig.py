@@ -15,3 +15,7 @@ app.config['MAIL_PASSWORD'] = 'ambika1234'
 
 # Json Configuration
 app.config["JSON_SORT_KEYS"] = False
+
+# <editor-fold desc="Others">
+app.config["AppUrl"] = 'http://127.0.0.1:5000/'
+# </editor-fold>

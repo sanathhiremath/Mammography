@@ -47,6 +47,7 @@ def ClassifyMammogram():
 
     model_json_path = Path('CNN/model.json')
     model_h5_path = Path('CNN/model.h5')
+    mammogram_path = Path(mammogram_path)
     json_file = open(model_json_path, 'r')
     loaded_model_json = json_file.read()
     json_file.close()

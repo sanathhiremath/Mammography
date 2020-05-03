@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel= "stylesheet"  href= "../static/doctorregistration.css" />
-    <link rel= "stylesheet"  href= "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="../static/doctorregistration.css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <meta charset="UTF-8">
     <title>Registration</title>
+
 </head>
 <body class="bg">
 <div class="menubar">
     <ul>
         <li class="active"><a href="/"><i class="fa fa-home" aria-hidden="true"></i> HOME</a></li>
-        </ul>
+    </ul>
 </div>
 <div class="loginbox">
     <img src="../static/avatar.jpe" class="loginimage">
     <h1>Register Here</h1>
-    <form id='registration' action='/doctor/doctorregistration' method='post'>
-        { { form.csrf }}
+    <form id='registration' action='/doctor/doctorregistration' method='post'>        
         <label for="name">Name</label>
-        <input type="text" name="name" id="name"  class="form-control" placeholder="Enter Your Name">
+        <input type="text" name="name" id="name" class="form-control" placeholder="Enter Your Name">
         <label for="dob">Date of Birth</label>
         <input type="text" name="dob" id="dob" placeholder="Enter Your Date of Birth">
-        <label for="PhoneNumber">Phone Number</label>
-        <input type="text" name="PhoneNumber" id="PhoneNumber" placeholder="Enter Your Phone Number">
+        <label for="phone_number">Phone Number</label>
+        <input type="text" name="phone_number" id="phone_number" placeholder="Enter Your Phone Number">
         <label for="specialization">Specialization</label>
         <input type="text" name="specialization" id="specialization" placeholder="Enter Your Specialization">
         <label for="email">Email</label>
@@ -31,22 +31,25 @@
         <input type="password" name="password" id="password" placeholder="Enter Password">
 
         <input type="submit" name="submit" value="Register">
-    </form> {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
 
-{% for message in messages %}
-{% if "Error" not in message[1]: %}
-<div class="alert alert-info">
-                <strong>Success! </strong> { { message[1] }}</div>
-{% endif %}
+    {% for message in messages %}
+    {% if "Error" not in message[1]: %}
+    <div class="alert alert-info">
+        <strong>Success! </strong> { { message[1] }}
+    </div>
+    {% endif %}
 
-{% if "Error" in message[1]: %}
-<div class="alert alert-warning">
-                { { message[1] }}</div>
-{% endif %}
-{% endfor %}
-{% endif %}
-{% endwith %}
+    {% if "Error" in message[1]: %}
+    <div class="alert alert-warning">
+        { { message[1] }}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </div>
 </body>
 </html>
