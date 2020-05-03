@@ -18,4 +18,5 @@ app.config["JSON_SORT_KEYS"] = False
 
 # <editor-fold desc="Others">
 app.config["AppUrl"] = 'http://127.0.0.1:5000/'
+app.config["MAMMOGRAMS_PATH"] = 'PatientMammograms/'
 # </editor-fold>

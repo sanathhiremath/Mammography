@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href= "../static/doctorcss.css"  rel= "stylesheet" />
+    <link href= "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  rel= "stylesheet" />
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body class="bg">
+<div class="menubar">
+    <ul>
+        <li class="active"><a href="/"><i aria-hidden="true" class="fa fa-home"></i> HOME</a></li>
+        </ul>
+</div>
+<div class="loginbox">
+    <img class="loginimage" src="../static/avatar.jpe">
+    <h1>Login Here</h1>
+    <form action='/doctor/DoctorLogin' id='login' method='post'>
+        <p>Username</p>
+        <input id="username" name="username" placeholder="Enter Username" type="text">
+        <p>Password</p>
+        <input id="password" name="password" placeholder="Enter Password" type="password">
+        <input name="submit" type="submit" value="Login">
+
+    </form>
+
+</div>
+</body>
+</html>

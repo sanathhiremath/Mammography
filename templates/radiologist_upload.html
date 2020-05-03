@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel= "stylesheet"  href= "../static/radiologist_patient.css" />
-    <link rel= "stylesheet"  href= "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="../static/radiologist_patient.css" rel="stylesheet"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body class="bg">
 <div class="menubar">
     <ul>
-        <li class="active"><a href="/"><i class="fa fa-home" aria-hidden="true"></i> HOME</a></li>
-        </ul>
+        <li class="active"><a href="/"><i aria-hidden="true" class="fa fa-home"></i> HOME</a></li>
+    </ul>
 </div>
 <div class="loginbox">
 
-    <form id='upload' action='/radiologist/radiologist_patient' method='post'>
-        <input type="File" name="fileupload" id="fileupload" accept=".jpg">
-
-        <input type="submit" name="submit" value="Submit">
-
+    <form action='/radiologist/UploadMammogram' id='upload' method='post' enctype="multipart/form-data">
+        <input id="user_id" name="user_id" type="hidden" value="{{id}}">
+        <input type="text" name="email" id="email" placeholder="Enter Patient Email Address">
+        <input accept=".*" id="mammogram_file" name="mammogram_file" type="File">
+        <input name="submit" type="submit" value="Submit">
     </form>
-
 </div>
 </body>
 </html>
