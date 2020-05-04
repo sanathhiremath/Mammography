@@ -93,7 +93,7 @@ def doctor_login():
             win32api.MessageBox(0, f'Invalid email or password.', 'Login Error')
             return redirect(request.referrer)
         else:
-            return render_template("doctor_registration.html")
+            return redirect(f'/doctor/doctor_patient?id={user.id}')
     else:
         return render_template("doctor_login.html")
 
@@ -121,6 +121,58 @@ def doctorregistration():
             return redirect(request.referrer)
     else:
         return render_template("doctor_registration.html")
+
+@app.route('/doctor/doctor_patient', methods=['GET', 'POST'])
+def doctorpatient():
+    if request.method == 'POST':
+        doctor_id = request.form["user_id"]
+        username = request.form["username"]
+        patient= PatientModel.query.filter_by(email=username).first()
+        patient_id=patient.id
+        db.session.commit()
+
+        if patient is None:
+            win32api.MessageBox(0, f'Invalid patient email', 'Patient Email Error')
+            return redirect(request.referrer)
+        else:
+            win32api.MessageBox(0, f'Valid Patient email', 'Patient Email')
+            prescription=PrescriptionModel.query.filter_by(pid=str(patient_id)).first()
+            prescription_id=prescription.id
+            db.session.commit()
+            return redirect(
+                f'/doctor/DoctorComments?user_id={doctor_id}&prescription_Id={prescription.id}&mammogram_results={prescription.radiology_result}&radiologist_comments={prescription.radiology_comments}')
+    else:
+        user_id = request.args["id"]
+        return render_template("doctor_patient.html", id=user_id)
+
+
+@app.route('/doctor/DoctorComments', methods=['GET', 'POST'])
+def doctor_comments():
+
+    doctor_id = request.form["user_id"]
+    prescription_id = request.form["prescription_Id"]
+    doctor_comments = request.form["comments"]
+    prescription_details = PrescriptionModel.query.filter_by(id=int(prescription_id)).first()
+    if request.method == 'POST':
+
+        if prescription_details is not None:
+            prescription_details.did=doctor_id
+            prescription_details.doctor_comments = doctor_comments
+            db.session.commit()
+            win32api.MessageBox(0, f'Successfully submitted doctor comments.', 'Alert')
+            return redirect(f'/doctor/doctor_patient?id={prescription_details.did}')
+        else:
+            win32api.MessageBox(0, f'This patient have not done mammogram.', 'Alert')
+            return redirect(request.referrer)
+    else:
+        doctor_id = request.args["user_id"]
+        prescription_id = request.args["prescription_Id"]
+
+        mammogram_result = request.args["mammogram_result"]
+        radiologist_comments=request.args["radiologist_comments"]
+        return render_template("doctorcomments.html", id=doctor_id, prescription_Id=prescription_id,
+                               mammogram_result=mammogram_result, radiologist_comments=radiologist_comments)
+
 
 
 # endregion
