@@ -1,0 +1,35 @@
+*{
+padding: 0;
+margin:0;
+box-sizing: border-box;
+}
+
+.menubar{
+background: rgb(0,0,100);
+text-align: left;
+height:50px;
+ }
+ .menubar ul{
+ display: inline-flex;
+ list-style: none;
+ color: #000000;
+ }
+.menubar ul li{
+width: 100px;
+height:30px;
+padding: 10px;
+margin-top:10px;
+margin-bottom:10px;
+margin-left:15px;
+}
+.menubar ul li a{
+text-decoration:none;
+color:#fff;
+}
+.active, .menubar ul li:hover{
+background: #D091B6;
+border-radius:3px;
+}
+.commentbox{
+mrgin-top:100px
+}

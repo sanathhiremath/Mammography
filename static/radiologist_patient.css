@@ -1,0 +1,111 @@
+*{
+padding: 0;
+margin:0;
+box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+}
+
+.bg{
+
+    background-image: url("radiologist_1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    background-position: center;
+}
+h1{
+margin: 0;
+padding: 0 0 20px;
+text-align: center;
+font-size:22px;
+color: #fff;
+}
+.loginbox{
+width:320px;
+height:320px;
+background:#000;
+color: #fff;
+background: rgb(0,0,0.5);
+top:60%;
+left:20%;
+position:absolute;
+transform: translate(-50%,-50%);
+box-sizing: border-box;
+padding: 70px 30px;
+}
+.loginimage {
+width:100px;
+height:100px;
+border-radius:50%;
+position:absolute;
+top: -50px;
+left: calc(50% - 50px);
+
+}
+.loginbox input {
+width:100%;
+margin-bottom:20px;
+}
+.loginbox input[type="text"], input[type="password"] {
+border:none;
+border-bottom:1px solid #fff;
+background: transparent;
+outline:none;
+height:40px;
+color:#fff;
+font-size:16px;
+}
+.loginbox input[type="submit"] {
+border:none;
+outline:none;
+height:40px;
+background: rgb(0,0,100);
+color:#fff;
+font-size:18px;
+border-radius:20px;
+}
+.loginbox input[type="submit"]:hover{
+cursor:pointer;
+background:#D091B6;
+color:#000;
+}
+.loginbox a{
+text-decorator:none;
+font-size:14px;
+color:#fff;
+margin-left:35px;
+text-align: center;
+}
+.loginbox a:hover{
+color:#D091B6;
+}
+.menubar{
+background: rgb(0,0,100);
+text-align: left;
+height:50px;
+ }
+ .menubar ul{
+ display: inline-flex;
+ list-style: none;
+ color: #000000;
+ }
+.menubar ul li{
+width: 100px;
+height:30px;
+padding: 10px;
+margin-top:10px;
+margin-bottom:10px;
+margin-left:15px;
+}
+.menubar ul li a{
+text-decoration:none;
+color:#fff;
+}
+.active, .menubar ul li:hover{
+background: #D091B6;
+border-radius:3px;
+}

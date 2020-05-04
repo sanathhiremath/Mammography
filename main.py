@@ -1,8 +1,14 @@
 import json
+import pathlib
+import string
 from pathlib import Path
+import random
 
+import requests
 import win32api
 from flask import render_template, request, redirect
+
+from werkzeug.utils import secure_filename
 
 from Src.models import *
 from Util.database import db, engine
@@ -56,22 +62,19 @@ def adminLogin():
     if request.method == 'POST':
         adusername = request.form["username"]
         adpassword = request.form["password"]
-
         adminuser = db.session.query(AdminModel).filter_by(email=adusername, password=adpassword).first()
-
         db.session.commit()
 
         if adminuser is None:
-            return render_template("admin_registration.html")
+            win32api.MessageBox(0, f'Invalid email or password.', 'Error')
+            return redirect(request.referrer)
         else:
-
-            # win32api.MessageBox(0, adminuser.name + " LoggedIn", 'Admin Response')
-            return render_template("admin_homepage.html")
+            return redirect('/admin/AdminHomepage')
     else:
         return render_template("admin_login.html")
 
 
-@app.route('/admin/adminLogin/adminhomepage', methods=['GET', 'POST'])
+@app.route('/admin/AdminHomepage', methods=['GET', 'POST'])
 def adminhomepage():
     return render_template("admin_homepage.html")
 
@@ -79,116 +82,137 @@ def adminhomepage():
 # endregion
 
 # region doctor
-@app.route('/doctor', methods=['GET', 'POST'])
-def doctor():
+@app.route('/doctor/DoctorLogin', methods=['GET', 'POST'])
+def doctor_login():
     if request.method == 'POST':
         username = request.form["username"]
         password = request.form["password"]
-
-        user = db.session.query(DoctorModel).filter_by(email=username).first()
-
+        user = db.session.query(DoctorModel).filter_by(email=username, password=password).first()
         db.session.commit()
         if user is None:
-            return render_template("homepage.html")
-        elif password != user.password:
-            return render_template("homepage.html")
+            win32api.MessageBox(0, f'Invalid email or password.', 'Login Error')
+            return redirect(request.referrer)
         else:
             return render_template("doctor_registration.html")
     else:
-        return render_template("doctorhomepage.html")
+        return render_template("doctor_login.html")
 
 
 @app.route('/doctor/doctorregistration', methods=['GET', 'POST'])
 def doctorregistration():
     if request.method == 'POST':
-        # y = json.dumps(request.form)
-        # data = json.loads(y)
         data = request.form
-        new_doctor = DoctorModel(name=data['name'], DOB=data['dob'], phone_number=data['phone_number'],
-                                 specialization=data['specialization'], email=data['email'], password=data['password'])
-        db.session.add(new_doctor)
+        user = db.session.query(DoctorModel).filter_by(email=data['email']).first()
         db.session.commit()
-
-        # win32api.MessageBox(0, str(new_doctor.id) + " LoggedIn", 'Admin Response')
-        link = f"{app.config['AppUrl']}admin/ResetPassword?id={new_doctor.id}&user_type=doctor"
-
-        email_body = "You are successfully registered {} <{}>.".format(new_doctor.name, new_doctor.email)
-        email_html = render_template('EmailTemplates/welcome_email.html', username=new_doctor.name, link=link)
-        send_email(new_doctor.email, '', "Confirmation Email", email_body, email_html)
-        return render_template("adminhomepage.html")
+        if user is None:
+            new_doctor = DoctorModel(name=data['name'], DOB=data['dob'], phone_number=data['phone_number'],
+                                     specialization=data['specialization'], email=data['email'],
+                                     password=data['password'])
+            db.session.add(new_doctor)
+            db.session.commit()
+            link = f"{app.config['AppUrl']}admin/ResetPassword?id={new_doctor.id}&user_type=doctor"
+            email_body = "You are successfully registered {} <{}>.".format(new_doctor.name, new_doctor.email)
+            email_html = render_template('EmailTemplates/welcome_email.html', username=new_doctor.name, link=link)
+            send_email(new_doctor.email, '', "Confirmation Email", email_body, email_html)
+            win32api.MessageBox(0, f'Doctor registered successfully.', 'Doctor Registration')
+            return redirect('/admin/AdminHomepage')
+        else:
+            win32api.MessageBox(0, 'User already exists with same email id.', 'Error')
+            return redirect(request.referrer)
     else:
         return render_template("doctor_registration.html")
-
-
-@app.route('/api/GetDoctorDetails/<email>/<password>', methods=['GET', 'POST'])
-def GetDoctorDetails(email, password):
-    # return "My emil is " +email+ " and password is "+ password
-    # return "Hello"
-    # json = request.get_json()
-    value = db.session.query(DoctorModel).filter_by(email=email, password=password).first()
-    # win32api.MessageBox(0,    # win32api.MessageBox(0,
-    # value.Name+value.email+str(value.DOB)+str(value.id)+value.PhoneNumber+value.specialization+value.password
-    # + " LoggedIn", 'Admin Response')
-    # value.Name+value.email+str(value.DOB)+str(value.id)+value.PhoneNumber+value.specialization+value.password
-    # + " LoggedIn", 'Admin Response')
-
-    db.session.commit()
-
-    if value is None:
-        r = {"id": 0}
-        res = {"result": r}
-        result = json.dumps(res)
-        # win32api.MessageBox(0,"invalid",'Admin response')
-        return result
-    else:
-        v = {"id": int(value.id), "name": value.Name, "dob": str(value.DOB), "phonenumber": value.PhoneNumber,
-             "specialization": value.specialization, "email": value.email, "password": value.password}
-        res = {"result": v}
-        # win32api.MessageBox(0,str(v),'Admin Response')
-
-        result = json.dumps(res)
-        # result=Response(js, status=200, mimetype=)
-        # win32api.MessageBox(0, value.Name + " LoggedIn", 'Admin Response')
-        return result
 
 
 # endregion
 
 # region radiologist
-@app.route('/radiologist', methods=['GET', 'POST'])
-def radiologist():
+@app.route('/radiologist/RadiologistLogin', methods=['GET', 'POST'])
+def radiologist_login():
     if request.method == 'POST':
         username = request.form["username"]
         password = request.form["password"]
-
-        user = db.session.query(RadiologistModel).filter_by(email=username).first()
-
+        user = db.session.query(RadiologistModel).filter_by(email=username, password=password).first()
         db.session.commit()
         if user is None:
-            return render_template("homepage.html")
-        elif password != user.password:
-            return render_template("homepage.html")
+            win32api.MessageBox(0, f'Invalid email or password.', 'Login Error')
+            return redirect(request.referrer)
         else:
-            return render_template("radiologist_registration.html")
+            return redirect(f'/radiologist/UploadMammogram?id={user.id}')
     else:
-        return render_template("radiologisthomepage.html")
+        return render_template("radiologist_login.html")
 
 
 @app.route('/radiologist/radiologistregistration', methods=['GET', 'POST'])
 def radiologistregistration():
     if request.method == 'POST':
-
-        re = json.dumps(request.form)
-        r = json.loads(re)
-
-        # data = request.get_json()
-        new_radiologist = RadiologistModel(name=r['name'], DOB=r['dob'], phone_number=r['PhoneNumber'],
-                                           specialization=r['specialization'], email=r['email'], password=r['password'])
-        db.session.add(new_radiologist)
+        data = request.form
+        user = db.session.query(DoctorModel).filter_by(email=data['email']).first()
         db.session.commit()
-        return render_template("adminhomepage.html")
+        if user is None:
+            new_radiologist = RadiologistModel(name=data['name'], DOB=data['dob'], phone_number=data['PhoneNumber'],
+                                               specialization=data['specialization'], email=data['email'],
+                                               password=data['password'])
+            db.session.add(new_radiologist)
+            db.session.commit()
+            win32api.MessageBox(0, f'Radiologist registered successfully.', 'Radiologist Registration')
+            return redirect('/admin/AdminHomepage')
+        else:
+            win32api.MessageBox(0, 'User already exists with same email id.', 'Error')
+            return redirect(request.referrer)
     else:
-        return render_template("radiologist_registration.html")
+        return render_template("radiologistregistrationpage.html")
+
+
+@app.route('/radiologist/UploadMammogram', methods=['GET', 'POST'])
+def upload_mammogram():
+    if request.method == 'POST':
+        radiologist_id = request.form["user_id"]
+        username = request.form["email"]
+        mammogram_file = request.files["mammogram_file"]
+
+        user = db.session.query(PatientModel).filter_by(email=username).first()
+        db.session.commit()
+
+        if user is None:
+            win32api.MessageBox(0, f'User does not exists.', 'Upload Error')
+            return redirect(request.referrer)
+        else:
+            if mammogram_file:
+                filename = secure_filename(mammogram_file.filename)
+                file_extension = pathlib.Path(filename).suffix
+                filename = f'{randomString()}{file_extension}'
+                mammogram_file.save(Path(app.config['MAMMOGRAMS_PATH'], filename))
+                res = Src.WebAPIs.ClassifyMammogram(f'{app.config["MAMMOGRAMS_PATH"]}{filename}')
+                res = res.get_json(force=True)
+                prescription = PrescriptionModel(pid=user.id, did='', rid=radiologist_id, patient_email=user.email,
+                                                 radiology_result=res['result'], radiology_comments='',
+                                                 radiology_image_path=filename, doctor_comments='')
+                db.session.add(prescription)
+                db.session.commit()
+                return redirect(
+                    f'/radiologist/RadiologistComments?prescription_Id={prescription.id}&mammogram_result={res["result"]}')
+
+    else:
+        user_id = request.args["id"]
+        return render_template("radiologist_upload.html", id=user_id)
+
+
+@app.route('/radiologist/RadiologistComments', methods=['GET', 'POST'])
+def radiologist_comments():
+    if request.method == 'POST':
+        prescription_id = request.form["prescription_Id"]
+        mammogram_comments = request.form["comments"]
+        prescription_details = PrescriptionModel.query.filter_by(id=int(prescription_id)).first()
+        if prescription_details is not None:
+            prescription_details.radiology_comments = mammogram_comments
+            db.session.commit()
+            win32api.MessageBox(0, f'Successfully submitted mammogram comments.', 'Alert')
+            return redirect(f'/radiologist/UploadMammogram?id={prescription_details.rid}')
+    else:
+        prescription_id = request.args["prescription_Id"]
+        mammogram_result = request.args["mammogram_result"]
+        return render_template("radilogistcomments.html", prescription_Id=prescription_id,
+                               mammogram_result=mammogram_result)
 
 
 # endregion
@@ -208,7 +232,7 @@ def patientregistration():
         db.session.add(new_patient)
         db.session.commit()
         message = "Successfully Registered"
-        return render_template("adminhomepage.html")
+        return render_template("admin_homepage.html")
     else:
         return render_template("patientregistration.html")
 
@@ -234,6 +258,10 @@ def patient():
 
 # endregion
 
+def randomString(stringLength=8):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
+
 
 if __name__ == "__main__":
-    app.run(debug=True, threaded=False)
+    app.run(debug=False, threaded=False)
