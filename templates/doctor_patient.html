@@ -16,6 +16,7 @@
     <img src="../static/avatar.jpe" class="loginimage">
     <h1>Enter Patient's Email Address</h1>
     <form id='patientemail' action='/doctor/doctor_patient' method='post'>
+         <input id="user_id" name="user_id" type="hidden" value="{{id}}">
         <input type="text" name="username" id="username" placeholder="Enter Patient Email Address">
 
         <input type="submit" name="submit" value="Submit">
