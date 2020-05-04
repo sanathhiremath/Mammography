@@ -98,7 +98,7 @@ class PrescriptionModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     pid = db.Column(db.String())
-    did = db.Column(db.Date())
+    did = db.Column(db.String())
     rid = db.Column(db.String())
     patient_email = db.Column(db.String())
     radiology_result = db.Column(db.String())

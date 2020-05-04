@@ -1,4 +1,5 @@
 
 *.pyc
-\migrations
-.idea
+/migrations/
+/*.idea/*
+/PatientMammograms/

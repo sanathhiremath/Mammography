@@ -4,9 +4,10 @@ import string
 from pathlib import Path
 import random
 
+import requests
 import win32api
 from flask import render_template, request, redirect
-from pip._vendor import requests
+
 from werkzeug.utils import secure_filename
 
 from Src.models import *
@@ -181,16 +182,23 @@ def upload_mammogram():
                 file_extension = pathlib.Path(filename).suffix
                 filename = f'{randomString()}{file_extension}'
                 mammogram_file.save(Path(app.config['MAMMOGRAMS_PATH'], filename))
-                res = requests.get(
-                    f'{app.config["AppUrl"]}/api/ClassifyMammogram?path={app.config["MAMMOGRAMS_PATH"]}{filename}')
-                prescription = PrescriptionModel(pid=user.id, did='', rid=radiologist_id, patient_email=user.email,
-                                                 radiology_result=res['result'], radiologist_comments='',
-                                                 radiology_image_path=filename, doctor_comments='')
-                db.session.add(prescription)
-                db.session.commit()
+                res = Src.WebAPIs.ClassifyMammogram(f'{app.config["MAMMOGRAMS_PATH"]}{filename}')
+                res = res.get_json(force=True)
+                prescription = PrescriptionModel.query.filter_by(pid=str(user.id)).first()
+                if prescription is None:
+                    prescription = PrescriptionModel(pid=user.id, did='', rid=radiologist_id, patient_email=user.email,
+                                                     radiology_result=res['result'], radiology_comments='',
+                                                     radiology_image_path=filename, doctor_comments='')
+                    db.session.add(prescription)
+                    db.session.commit()
+                else:
+                    prescription.rid = radiologist_id
+                    prescription.radiology_result = res['result']
+                    prescription.radiology_image_path = filename
+                    db.session.commit()
+                return redirect(
+                    f'/radiologist/RadiologistComments?prescription_Id={prescription.id}&mammogram_result={res["result"]}')
 
-            return redirect(
-                f'/radiologist/RadiologistComments?prescription_id={prescription.id}&mammogram_result={res["result"]}')
     else:
         user_id = request.args["id"]
         return render_template("radiologist_upload.html", id=user_id)
@@ -198,22 +206,20 @@ def upload_mammogram():
 
 @app.route('/radiologist/RadiologistComments', methods=['GET', 'POST'])
 def radiologist_comments():
-    if request.method == 'GET':
-        prescription_id = request.args["prescription_id"]
-        mammogram_result = request.args["mammogram_result"]
-        return render_template("radilogistcomments.html", prescription_id=prescription_id,
-                               mammogram_result=mammogram_result)
-    else:
-        prescription_id = request.form["prescription_id"]
+    if request.method == 'POST':
+        prescription_id = request.form["prescription_Id"]
         mammogram_comments = request.form["comments"]
-        # prescription_details = db.session.query(PatientModel).filter_by(id=prescription_id).first()
-        # db.session.commit()
-        prescription_details = PatientModel.query.filter_by(id=prescription_id).first()
+        prescription_details = PrescriptionModel.query.filter_by(id=int(prescription_id)).first()
         if prescription_details is not None:
             prescription_details.radiology_comments = mammogram_comments
             db.session.commit()
-        win32api.MessageBox(0, f'Successfully submitted mammogram comments.', 'Alert')
-        return redirect(f'/radiologist/UploadMammogram?id={prescription_details.rid}')
+            win32api.MessageBox(0, f'Successfully submitted mammogram comments.', 'Alert')
+            return redirect(f'/radiologist/UploadMammogram?id={prescription_details.rid}')
+    else:
+        prescription_id = request.args["prescription_Id"]
+        mammogram_result = request.args["mammogram_result"]
+        return render_template("radilogistcomments.html", prescription_Id=prescription_id,
+                               mammogram_result=mammogram_result)
 
 
 # endregion

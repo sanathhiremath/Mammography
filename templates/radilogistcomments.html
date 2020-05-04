@@ -13,18 +13,17 @@
     </ul>
 </div>
 <div class="commentbox">
+    <div>
+        <table>
+            <tr>
+                <td>Mammogram result:</td>
+                <td>{{mammogram_result}}</td>
+            </tr>
+        </table>
+    </div>
     <form id='comment' action='/radiologist/RadiologistComments' method='post'>
-        <input type="hidden" name="prescription_Id" value="{{prescription_id}}">
-        <div>
-            <table>
-                <tr>
-                    <td>Mammogram result: </td>
-                    <td>{{mammogram_result}}</td>
-                </tr>
-            </table>
-        </div>
-        <input type="text" value="{{mammogram_result}}">
-        <textarea name="comments" cols="100" rows="10">Enter text here...</textarea>
+        <input type="hidden" id="prescription_Id" name="prescription_Id" value="{{prescription_Id}}">
+        <textarea name="comments" cols="100" rows="10"></textarea>
         <br/>
         <input type="submit" name="submit" value="Submit">
     </form>

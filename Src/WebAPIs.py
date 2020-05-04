@@ -40,10 +40,10 @@ def get_user_details():
 
 # endregion
 
-@app.route('/api/ClassifyMammogram')
-def ClassifyMammogram():
+@app.route('/api/ClassifyMammogram/<path:mammogram_path>')
+def ClassifyMammogram(mammogram_path):
     # args
-    mammogram_path = request.args['path']
+    # mammogram_path = request.args['path']
 
     model_json_path = Path('CNN/model.json')
     model_h5_path = Path('CNN/model.h5')
