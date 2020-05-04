@@ -184,18 +184,11 @@ def upload_mammogram():
                 mammogram_file.save(Path(app.config['MAMMOGRAMS_PATH'], filename))
                 res = Src.WebAPIs.ClassifyMammogram(f'{app.config["MAMMOGRAMS_PATH"]}{filename}')
                 res = res.get_json(force=True)
-                prescription = PrescriptionModel.query.filter_by(pid=str(user.id)).first()
-                if prescription is None:
-                    prescription = PrescriptionModel(pid=user.id, did='', rid=radiologist_id, patient_email=user.email,
-                                                     radiology_result=res['result'], radiology_comments='',
-                                                     radiology_image_path=filename, doctor_comments='')
-                    db.session.add(prescription)
-                    db.session.commit()
-                else:
-                    prescription.rid = radiologist_id
-                    prescription.radiology_result = res['result']
-                    prescription.radiology_image_path = filename
-                    db.session.commit()
+                prescription = PrescriptionModel(pid=user.id, did='', rid=radiologist_id, patient_email=user.email,
+                                                 radiology_result=res['result'], radiology_comments='',
+                                                 radiology_image_path=filename, doctor_comments='')
+                db.session.add(prescription)
+                db.session.commit()
                 return redirect(
                     f'/radiologist/RadiologistComments?prescription_Id={prescription.id}&mammogram_result={res["result"]}')
 
