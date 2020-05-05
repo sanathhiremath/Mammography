@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Homepage</title>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <th>
+            Doctor Comments
+        </th>
+        <th>
+            Radiology Comments
+        </th>
+        <th>
+            Mammogram results
+        </th>
+        <th>
+            Mammogram image
+        </th>
+    </tr>
+
+    {%for pres in prescriptions%}
+    <tr>
+
+        <td>{{pres['doctor_comments']}}</td>
+        <td>{{pres['radiology_comments']}}</td>
+        <td>{{pres['radiology_result']}}</td>
+        <td><a href="../static/PatientMammograms/{{pres['radiology_image_path']}}">click here</a> </td>
+
+    </tr>
+    {%endfor%}
+</table>
+
+</body>
+</html>

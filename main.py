@@ -3,19 +3,13 @@ import pathlib
 import string
 from pathlib import Path
 import random
-
-import requests
 import win32api
 from flask import render_template, request, redirect
-
 from werkzeug.utils import secure_filename
-
 from Src.models import *
-from Util.database import db, engine
+from Util.database import db, engine, dbmodel_to_jsonlist
 from Util.email import send_email
 from appConfig import app
-
-# app.config['SECRET_KEY'] = 'qwertyuiop'
 
 # region run files
 import Src.models
@@ -122,25 +116,21 @@ def doctorregistration():
     else:
         return render_template("doctor_registration.html")
 
+
 @app.route('/doctor/doctor_patient', methods=['GET', 'POST'])
 def doctorpatient():
     if request.method == 'POST':
         doctor_id = request.form["user_id"]
         username = request.form["username"]
-        patient= PatientModel.query.filter_by(email=username).first()
-        patient_id=patient.id
-        db.session.commit()
-
+        patient = PatientModel.query.filter_by(email=username).first()
         if patient is None:
             win32api.MessageBox(0, f'Invalid patient email', 'Patient Email Error')
             return redirect(request.referrer)
         else:
-            win32api.MessageBox(0, f'Valid Patient email', 'Patient Email')
-            prescription=PrescriptionModel.query.filter_by(pid=str(patient_id)).first()
-            prescription_id=prescription.id
-            db.session.commit()
+            prescription = PrescriptionModel.query.filter_by(pid=str(patient.id)).order_by(
+                PrescriptionModel.id.desc()).first()
             return redirect(
-                f'/doctor/DoctorComments?user_id={doctor_id}&prescription_Id={prescription.id}&mammogram_results={prescription.radiology_result}&radiologist_comments={prescription.radiology_comments}')
+                f'/doctor/DoctorComments?user_id={doctor_id}&prescription_Id={prescription.id}&mammogram_results={prescription.radiology_result}&radiologist_comments={prescription.radiology_comments}&image={prescription.radiology_image_path}')
     else:
         user_id = request.args["id"]
         return render_template("doctor_patient.html", id=user_id)
@@ -148,18 +138,25 @@ def doctorpatient():
 
 @app.route('/doctor/DoctorComments', methods=['GET', 'POST'])
 def doctor_comments():
-
-    doctor_id = request.form["user_id"]
-    prescription_id = request.form["prescription_Id"]
-    doctor_comments = request.form["comments"]
-    prescription_details = PrescriptionModel.query.filter_by(id=int(prescription_id)).first()
     if request.method == 'POST':
+        doctor_id = request.form["user_id"]
+        prescription_id = request.form["prescription_Id"]
+        doctor_comments = request.form["comments"]
+        prescription_details = PrescriptionModel.query.filter_by(id=int(prescription_id)).first()
 
         if prescription_details is not None:
-            prescription_details.did=doctor_id
+            prescription_details.did = doctor_id
             prescription_details.doctor_comments = doctor_comments
             db.session.commit()
             win32api.MessageBox(0, f'Successfully submitted doctor comments.', 'Alert')
+            patient = PatientModel.query.filter_by(id=int(prescription_details.pid)).first()
+            doctor = DoctorModel.query.filter_by(id=int(doctor_id)).first()
+            email_body = ""
+            email_html = render_template('EmailTemplates/patient_report.html', doctorName=doctor.name,
+                                         patientName=patient.name, Prescription=doctor_comments)
+            send_email(patient.email, '', "Prescription Email", email_body, email_html,
+                       f'static/PatientMammograms/{prescription_details.radiology_image_path}')
+
             return redirect(f'/doctor/doctor_patient?id={prescription_details.did}')
         else:
             win32api.MessageBox(0, f'This patient have not done mammogram.', 'Alert')
@@ -167,12 +164,12 @@ def doctor_comments():
     else:
         doctor_id = request.args["user_id"]
         prescription_id = request.args["prescription_Id"]
-
-        mammogram_result = request.args["mammogram_result"]
-        radiologist_comments=request.args["radiologist_comments"]
+        mammogram_result = request.args["mammogram_results"]
+        radiologist_comments = request.args["radiologist_comments"]
+        mammogram_image = request.args["image"]
         return render_template("doctorcomments.html", id=doctor_id, prescription_Id=prescription_id,
-                               mammogram_result=mammogram_result, radiologist_comments=radiologist_comments)
-
+                               mammogram_result=mammogram_result, radiologist_comments=radiologist_comments,
+                               image=mammogram_image)
 
 
 # endregion
@@ -273,11 +270,7 @@ def radiologist_comments():
 @app.route('/patient/patientregistration', methods=['GET', 'POST'])
 def patientregistration():
     if request.method == 'POST':
-
-        pa = json.dumps(request.form)
-        p = json.loads(pa)
-
-        # data = request.get_json()
+        p = request.form
         new_patient = PatientModel(name=p['name'], DOB=p['dob'], guardian_name=['guardianname'],
                                    phone_number=p['PhoneNumber'], address=p['address'], email=p['email'],
                                    password=p['password'])
@@ -294,18 +287,26 @@ def patient():
     if request.method == 'POST':
         username = request.form["username"]
         password = request.form["password"]
-
         user = db.session.query(PatientModel).filter_by(email=username).first()
-
         db.session.commit()
         if user is None:
             return render_template("homepage.html")
         elif password != user.password:
             return render_template("homepage.html")
         else:
-            return render_template("radiologist_registration.html")
+            return redirect(f"/patient/PatientHomepage?id={user.id}")
     else:
-        return render_template("patienthomepage.html")
+        return render_template("patient_login.html")
+
+
+@app.route('/patient/PatientHomepage', methods=['GET', 'POST'])
+def patient_homepage():
+    patient_id = request.args["id"]
+    # res = db.session.query(PrescriptionModel).filter_by(pid=patient_id).all()
+    # db.session.commit()
+    res = PrescriptionModel.query.filter_by(pid=patient_id).all()
+    res = dbmodel_to_jsonlist(res)
+    return render_template('patient_homepage.html', prescriptions=res)
 
 
 # endregion

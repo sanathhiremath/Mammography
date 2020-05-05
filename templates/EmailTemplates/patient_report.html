@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+    body {
+        height: 842px;
+        width: 595px;
+        /* to centre page on screen*/
+        margin-left: auto;
+        margin-right: auto;
+
+        border: double black;
+        border-width: thick;
+    }
+
+
+    </style>
+</head>
+
+
+<body>
+
+
+<table style="width: 595px;" bgcolor="#E6E6FA">
+    <tbody>
+    <tr style="height: 22.8px;">
+        <td style="width: 324px; height: 22.8px;">
+            <h2>&nbsp;<strong>Mammogram Diagnostics&nbsp;</strong></h2>
+        </td>
+        <td style="width: 257.8px; height: 39.8px;" rowspan="2">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </td>
+    </tr>
+    <tr style="height: 17px;">
+        <td style="width: 324px; height: 17px;">&nbsp;Dr.{{doctorName}}&nbsp;</td>
+    </tr>
+    </tbody>
+</table>
+<hr/>
+<div style="padding:5px;">
+    <p>&nbsp;</p>
+    <p>Hi {{patientName}}</p>
+    <p>Below is your prescription details suggested by Dr.{{doctorName}} on your visit on {{date}}.</p>
+    <p>{{Prescription}}</p>
+    <p>Please download the attached mammogram.</p>
+    <p>Thanks for visiting us.</p>
+    <p>Mammogram Diagnostics</p>
+    <p>&nbsp;</p>
+</div>
+
+
+</body>
+</html>

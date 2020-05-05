@@ -23,6 +23,10 @@
                 <td>Radiologist Comments:</td>
                 <td>{{radiologist_comments}}</td>
             </tr>
+            <tr>
+                <td>Mammogram:</td>
+                <td><img src="../static/PatientMammograms/{{image}}" alt="mammogram image" style="width:500px; height:500px;"></td>
+            </tr>
         </table>
     </div>
     <form id='comment' action='/doctor/DoctorComments' method='post'>
